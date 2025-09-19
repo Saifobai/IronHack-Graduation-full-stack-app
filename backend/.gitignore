@@ -28,7 +28,7 @@ build/
 .vscode/
 .settings/
 
-backend/storage
+/backend/storage
 
-backend/uploads
-backend/rlhf_data.jsonl
+/backend/uploads
+/backend/rlhf_data.jsonl
