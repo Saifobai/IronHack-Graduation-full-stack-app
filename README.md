@@ -117,8 +117,9 @@ Talk with Jarvis using text or speech — fully integrated.
 Institute: Ironhack
 
 Teacher: Isabella Bicalho
+Teacher: Tejal Bhatti
 
-Student & Creator: Saif ✨
+Student & Developer: Saif ✨
 
 Date: 19.09.2025
 ```

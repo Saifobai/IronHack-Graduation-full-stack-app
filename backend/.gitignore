@@ -31,4 +31,4 @@ build/
 /backend/storage
 
 /backend/uploads
-/backend/rlhf_data.jsonl
+/rlhf_data.jsonl
