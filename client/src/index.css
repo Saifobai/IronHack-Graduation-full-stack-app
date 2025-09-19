@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+
+
+@keyframes scan {
+  from { background-position: 0 0; }
+  to { background-position: 0 100%; }
+}
+.animate-scan {
+  animation: scan 6s linear infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+.animate-typing {
+  display: inline-block;
+  animation: typing 2s steps(40, end) forwards;
+}
+
+
+
+
+
+.bg-grid {
+  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}

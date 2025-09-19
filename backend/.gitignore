@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+.env
+# Virtual env
+venv/
+.venv/
+env/
+python_env_added/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build / dist
+dist/
+build/
+.cache/
+
+# VSCode
+.vscode/
+.settings/
+
+backend/storage
+
+backend/uploads
+backend/rlhf_data.jsonl
