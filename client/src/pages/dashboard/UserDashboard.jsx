@@ -158,6 +158,7 @@
 //       toast.error("❌ Summarization failed. Please try again.");
 //     } finally {
 //       setIsLoading(false);
+//       setLoadingTask(null); // ✅ Close modal
 //     }
 //   };
 
@@ -179,6 +180,7 @@
 //       toast.error("❌ Highlights generation failed. Please try again.");
 //     } finally {
 //       setIsLoading(false);
+//       setLoadingTask(null); // ✅ Close modal
 //     }
 //   };
 
@@ -200,6 +202,7 @@
 //       toast.error("❌ Transcription failed. Please try again.");
 //     } finally {
 //       setIsLoading(false);
+//       setLoadingTask(null); // ✅ Close modal
 //     }
 //   };
 
@@ -221,6 +224,7 @@
 //       toast.error("❌ Viral clips generation failed. Please try again.");
 //     } finally {
 //       setIsLoading(false);
+//       setLoadingTask(null); // ✅ Close modal
 //     }
 //   };
 
@@ -379,18 +383,18 @@
 //         <DownloadModal
 //           onClose={() => setIsDownloadModalOpen(false)}
 //           videoLink={videoLink}
+//           onDownload={handleDownload}
 //         />
 //       )}
-//       {loadingTask && <LoadingModal taskName={loadingTask} />}
+//       {isLoading && loadingTask && <LoadingModal taskName={loadingTask} />}
 //     </div>
 //   );
 // };
 
 // export default UserDashboard;
 
-//============================================================
+//======================================================
 
-// src/pages/user/UserDashboard.jsx
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
@@ -440,6 +444,13 @@ const UserDashboard = () => {
   const [transcription, setTranscription] = useState(""); // string
   const [clips, setClips] = useState([]); // array
   const [loadingTask, setLoadingTask] = useState(null);
+  const [activeFeature, setActiveFeature] = useState(null);
+
+  const triggerFeature = (featureKey, actionFn) => {
+    setActiveFeature(featureKey);
+    actionFn();
+    setTimeout(() => setActiveFeature(null), 1500); // reset after 1.5s
+  };
 
   // 🔹 Extract link & intent from navigation
   useEffect(() => {
@@ -622,12 +633,30 @@ const UserDashboard = () => {
   };
 
   // 🔹 Jarvis Chat Integration
-  const handleJarvisIntent = (intent) => {
-    if (intent === "summarize") setHighlightCard("summarize");
-    if (intent === "highlight") setHighlightCard("highlights");
-    if (intent === "clips") setHighlightCard("viral");
-    if (intent === "captions") setHighlightCard("captions"); // TODO
-    if (intent === "transcription") setHighlightCard("transcribe");
+  const handleJarvisIntent = (intent, maybeLink) => {
+    if (maybeLink) setVideoLink(maybeLink);
+
+    switch (intent) {
+      case "summarize":
+        triggerFeature("summarize", handleSummarize);
+        break;
+      case "highlight":
+        triggerFeature("highlight", handleHighlights);
+        break;
+      case "clips":
+        triggerFeature("clips", handleViralClips);
+        break;
+      case "transcription":
+        triggerFeature("transcription", handleTranscribe);
+        break;
+      case "captions":
+        triggerFeature("captions", () =>
+          toast.info("⚠️ Captions feature coming soon!")
+        );
+        break;
+      default:
+        toast.error("Unknown intent");
+    }
   };
 
   // 🔹 Highlight active sidebar button
@@ -647,45 +676,69 @@ const UserDashboard = () => {
         </h2>
         <nav className="mt-10 flex flex-col gap-4">
           <button
-            onClick={handleSummarize}
-            disabled={isLoading}
-            className={getGlow(
-              "summarize",
-              "flex items-center gap-3 px-4 py-2 rounded-lg transition"
-            )}
+            onClick={() => triggerFeature("summarize", handleSummarize)}
+            className={`flex items-center px-4 py-2 rounded-lg transition
+    ${
+      activeFeature === "summarize"
+        ? "bg-gradient-to-r from-cyan-400 to-cyan-600 animate-pulse"
+        : "hover:bg-gray-700"
+    }`}
           >
             <FileText size={20} className="text-cyan-400" /> Summarize
           </button>
+
           <button
-            onClick={handleHighlights}
-            disabled={isLoading}
-            className={getGlow(
-              "highlights",
-              "flex items-center gap-3 px-4 py-2 rounded-lg transition"
-            )}
+            onClick={() => triggerFeature("highlight", handleHighlights)}
+            className={`flex items-center px-4 py-2 rounded-lg transition
+    ${
+      activeFeature === "highlight"
+        ? "bg-gradient-to-r from-pink-400 to-pink-600 animate-pulse"
+        : "hover:bg-gray-700"
+    }`}
           >
             <Star size={20} className="text-pink-400" /> Highlights
           </button>
+
           <button
-            onClick={handleViralClips}
-            disabled={isLoading}
-            className={getGlow(
-              "viral",
-              "flex items-center gap-3 px-4 py-2 rounded-lg transition"
-            )}
+            onClick={() => triggerFeature("clips", handleViralClips)}
+            className={`flex items-center px-4 py-2 rounded-lg transition
+    ${
+      activeFeature === "clips"
+        ? "bg-gradient-to-r from-purple-400 to-purple-600 animate-pulse"
+        : "hover:bg-gray-700"
+    }`}
           >
             <Video size={20} className="text-green-400" /> Viral Clips
           </button>
+
           <button
-            onClick={handleTranscribe}
-            disabled={isLoading}
-            className={getGlow(
-              "transcribe",
-              "flex items-center gap-3 px-4 py-2 rounded-lg transition"
-            )}
+            onClick={() =>
+              triggerFeature("captions", () =>
+                toast.info("⚠️ Captions coming soon!")
+              )
+            }
+            className={`flex items-center px-4 py-2 rounded-lg transition
+    ${
+      activeFeature === "captions"
+        ? "bg-gradient-to-r from-green-400 to-green-600 animate-pulse"
+        : "hover:bg-gray-700"
+    }`}
+          >
+            Auto-Captions
+          </button>
+
+          <button
+            onClick={() => triggerFeature("transcription", handleTranscribe)}
+            className={`flex items-center px-4 py-2 rounded-lg transition
+    ${
+      activeFeature === "transcription"
+        ? "bg-gradient-to-r from-yellow-400 to-yellow-600 animate-pulse"
+        : "hover:bg-gray-700"
+    }`}
           >
             <Mic size={20} className="text-yellow-400" /> Transcription
           </button>
+
           <button
             onClick={() => setIsDownloadModalOpen(true)}
             className={getGlow(
