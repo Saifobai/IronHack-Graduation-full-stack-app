@@ -56,6 +56,7 @@ const getPreview = (job) => {
 };
 
 const JobCard = ({ job, setSelectedJob, onDelete }) => {
+  // Delete job handler
   const handleDelete = async (e) => {
     e.stopPropagation();
     if (!window.confirm("Are you sure you want to delete this job?")) return;
@@ -80,6 +81,7 @@ const JobCard = ({ job, setSelectedJob, onDelete }) => {
              transition-transform hover:-translate-y-1 hover:scale-[1.02]
              w-80 h-[500px] flex flex-col justify-between"
     >
+      {/* Header */}
       <div className="flex justify-between mb-3">
         <span
           className={`text-xs px-3 py-1 rounded-full font-semibold capitalize
@@ -109,6 +111,7 @@ const JobCard = ({ job, setSelectedJob, onDelete }) => {
         </span>
       </div>
 
+      {/* Title */}
       <div className="flex items-center gap-3 mb-2">
         {getIcon(job.task)}
         <h3 className="font-semibold text-lg capitalize text-gray-100">
@@ -116,6 +119,7 @@ const JobCard = ({ job, setSelectedJob, onDelete }) => {
         </h3>
       </div>
 
+      {/* Content (always same space) */}
       <div className="flex-1 w-full overflow-y-auto">
         {job.task === "viral" && job.clip ? (
           <div className="w-full aspect-[9/16] rounded-xl overflow-hidden bg-black shadow-md">
@@ -130,18 +134,22 @@ const JobCard = ({ job, setSelectedJob, onDelete }) => {
         )}
       </div>
 
+      {/* Footer (always visible) */}
       <div className="flex justify-between mt-3">
+        {/* Download */}
         {job.task === "viral" && job.clip ? (
+          // ✅ Directly download the mp4 for viral clips
           <a
             href={job.clip.url}
             download={`${job.clip.title || "viral_clip"}.mp4`}
             onClick={(e) => e.stopPropagation()}
             className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-pink-500
-               rounded-lg text-xs font-medium hover:opacity-90 shadow-md transition"
+           rounded-lg text-xs font-medium hover:opacity-90 shadow-md transition"
           >
             <Download size={14} /> Download
           </a>
         ) : (
+          // ✅ For other tasks, export JSON result
           <a
             href={
               "data:text/json;charset=utf-8," +
@@ -150,16 +158,17 @@ const JobCard = ({ job, setSelectedJob, onDelete }) => {
             download={`${job.task}_result.json`}
             onClick={(e) => e.stopPropagation()}
             className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-pink-500
-               rounded-lg text-xs font-medium hover:opacity-90 shadow-md transition"
+           rounded-lg text-xs font-medium hover:opacity-90 shadow-md transition"
           >
             <Download size={14} /> Download
           </a>
         )}
 
+        {/* Delete Button */}
         <button
           onClick={handleDelete}
           className="flex items-center gap-1 px-3 py-1.5 bg-red-600/80 hover:bg-red-600
-           rounded-lg text-xs font-medium text-white shadow-md transition"
+         rounded-lg text-xs font-medium text-white shadow-md transition"
         >
           <Trash2 size={14} /> Delete
         </button>

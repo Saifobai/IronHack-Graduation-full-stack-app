@@ -5,38 +5,38 @@ import { useSelector } from "react-redux";
 
 const DownloadModal = ({ onClose, videoLink }) => {
   const { currentUser } = useSelector((state) => state.user);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingType, setLoadingType] = useState(null); // null | "tiktok" | "youtube"
   const [status, setStatus] = useState("");
+
+  const isLoading = loadingType !== null;
 
   const handleDownload = async (type) => {
     if (!videoLink) {
       alert("❌ Please enter a video link first.");
       return;
     }
+    if (isLoading) return; // guard against a second click while one is in flight
 
     try {
-      setIsLoading(true);
+      setLoadingType(type);
       setStatus("Downloading & processing...");
 
-      // Select endpoint
       const endpoint = type === "tiktok" ? "/video/tiktok" : "/video/youtube";
 
-      // Send POST request with video URL
       const res = await api.post(
         endpoint,
         { url: videoLink },
-        { responseType: "blob" }
+        { responseType: "blob" },
       );
 
       setStatus("Almost done...");
 
-      // Create download link
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute(
         "download",
-        type === "tiktok" ? "tiktok_video.mp4" : "youtube_video.mp4"
+        type === "tiktok" ? "tiktok_video.mp4" : "youtube_video.mp4",
       );
       document.body.appendChild(link);
       link.click();
@@ -48,7 +48,7 @@ const DownloadModal = ({ onClose, videoLink }) => {
       console.error(err);
       alert("❌ Download failed. Try again.");
     } finally {
-      setIsLoading(false);
+      setLoadingType(null);
       setStatus("");
     }
   };
@@ -56,7 +56,6 @@ const DownloadModal = ({ onClose, videoLink }) => {
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-gray-900 bg-opacity-90 border border-gray-700 rounded-2xl shadow-2xl p-10 max-w-lg w-full text-center">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
             Choose Download Format
@@ -73,14 +72,13 @@ const DownloadModal = ({ onClose, videoLink }) => {
           Select how you want to save your video 🎬
         </p>
 
-        {/* Buttons */}
         <div className="flex flex-col gap-6">
           <button
             onClick={() => handleDownload("tiktok")}
             disabled={isLoading}
             className="bg-gradient-to-r from-pink-500 to-purple-600 px-8 py-4 rounded-xl text-lg font-semibold hover:opacity-90 transition shadow-lg disabled:opacity-50"
           >
-            {isLoading ? (
+            {loadingType === "tiktok" ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="animate-spin" /> {status || "Processing..."}
               </span>
@@ -94,7 +92,7 @@ const DownloadModal = ({ onClose, videoLink }) => {
             disabled={isLoading}
             className="bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:opacity-90 transition shadow-lg disabled:opacity-50"
           >
-            {isLoading ? (
+            {loadingType === "youtube" ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="animate-spin" /> {status || "Processing..."}
               </span>

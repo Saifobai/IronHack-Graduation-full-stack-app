@@ -116,12 +116,16 @@ const MyWorkPage = () => {
                 </ul>
               )}
 
-              {selectedJob.task === "q&a" && (
+              {selectedJob.task === "chat" && (
                 <div>
                   <p className="text-pink-400 font-semibold">Q:</p>
-                  <p className="mb-3">{selectedJob.result?.question}</p>
+                  <p className="mb-3">{selectedJob.payload?.message || "—"}</p>
                   <p className="text-green-400 font-semibold">A:</p>
-                  <p>{selectedJob.result?.answer}</p>
+                  <p>
+                    {selectedJob.result?.response ||
+                      selectedJob.result?.reply ||
+                      JSON.stringify(selectedJob.result)}
+                  </p>
                 </div>
               )}
 
