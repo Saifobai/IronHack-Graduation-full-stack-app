@@ -99,14 +99,20 @@ const MyWorkPage = () => {
 
               {selectedJob.task === "highlights" && (
                 <ul className="space-y-2 list-disc pl-5">
-                  {selectedJob.result?.highlights?.map((h, i) => (
-                    <li key={i}>
-                      <span className="text-cyan-400 font-semibold">
-                        {h.timestamp || `Highlight ${i + 1}`}:
-                      </span>{" "}
-                      {h.text || h}
-                    </li>
-                  )) || <li>No highlights found.</li>}
+                  {Array.isArray(selectedJob.result?.highlights) &&
+                  selectedJob.result.highlights.length > 0 ? (
+                    selectedJob.result.highlights.map((h, i) => (
+                      <li key={i}>
+                        <span className="text-cyan-400 font-semibold">
+                          {h?.timestamp || `Highlight ${i + 1}`}:
+                        </span>{" "}
+                        {h?.text ||
+                          (typeof h === "string" ? h : JSON.stringify(h))}
+                      </li>
+                    ))
+                  ) : (
+                    <li>No highlights found.</li>
+                  )}
                 </ul>
               )}
 
@@ -121,7 +127,7 @@ const MyWorkPage = () => {
 
               {/* Fallback */}
               {!["transcribe", "summarize", "highlights", "q&a"].includes(
-                selectedJob.task
+                selectedJob.task,
               ) && (
                 <pre className="whitespace-pre-wrap break-words">
                   {JSON.stringify(selectedJob.result, null, 2)}

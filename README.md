@@ -1,8 +1,5 @@
 # 🎬 ClipoFrameAI — AI-Powered Video Summaries, Highlights & Viral Clips
 
-> **Built at Ironhack Institute | Teacher: Isabella Bicalho | Graduation Project**  
-> Created by **Saif** — _19.09.2025_
-
 ---
 
 ## ✨ Overview

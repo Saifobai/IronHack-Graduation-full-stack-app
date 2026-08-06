@@ -169,7 +169,8 @@ const UserDashboard = () => {
       setLoadingTask("Highlight Generation");
       const data = await generateHighlights(currentUser?.token, link);
       if (data.success) {
-        setHighlights(data.result.highlights || []);
+        const h = data.result.highlights;
+        setHighlights(Array.isArray(h) ? h : []);
         toast.success("✅ Highlights generated! Check My Work.");
       } else {
         toast.error("❌ Highlights failed: " + data.error);
@@ -203,7 +204,6 @@ const UserDashboard = () => {
       setLoadingTask(null);
     }
   };
-
   const handleViralClips = async (link) => {
     try {
       setHighlightCard("clips");
@@ -211,7 +211,8 @@ const UserDashboard = () => {
       setLoadingTask("Viral Clip Generation");
       const data = await generateViralClips(currentUser?.token, link);
       if (data.success) {
-        setClips(data.result.clips || []);
+        const c = data.result.clips;
+        setClips(Array.isArray(c) ? c : []);
         toast.success("✅ Viral clips ready! Check My Work.");
       } else {
         toast.error("❌ Viral clips failed: " + data.error);
@@ -272,7 +273,7 @@ const UserDashboard = () => {
         break;
       case "captions":
         triggerFeature("captions", () =>
-          toast.info("⚠️ Captions feature coming soon!")
+          toast.info("⚠️ Captions feature coming soon!"),
         );
         break;
       default:
@@ -347,7 +348,7 @@ const UserDashboard = () => {
           <button
             onClick={() =>
               triggerFeature("captions", () =>
-                toast.info("⚠️ Captions coming soon!")
+                toast.info("⚠️ Captions coming soon!"),
               )
             }
             className={`flex items-center gap-3 px-4 py-2 rounded-lg transition
@@ -376,7 +377,7 @@ const UserDashboard = () => {
             onClick={() => setIsDownloadModalOpen(true)}
             className={getGlow(
               "download",
-              "flex items-center gap-3 px-4 py-2 rounded-lg transition"
+              "flex items-center gap-3 px-4 py-2 rounded-lg transition",
             )}
           >
             <Download size={20} className="text-purple-400" /> Download
@@ -385,7 +386,7 @@ const UserDashboard = () => {
             onClick={() => setIsUploadModalOpen(true)}
             className={getGlow(
               "upload",
-              "flex items-center gap-3 px-4 py-2 rounded-lg transition"
+              "flex items-center gap-3 px-4 py-2 rounded-lg transition",
             )}
           >
             <Upload size={20} className="text-red-400" /> Upload
@@ -394,7 +395,7 @@ const UserDashboard = () => {
             to="/user-dashboard/my-work"
             className={getGlow(
               "mywork",
-              "flex items-center gap-3 px-4 py-2 rounded-lg transition"
+              "flex items-center gap-3 px-4 py-2 rounded-lg transition",
             )}
           >
             <FolderOpen size={20} className="text-blue-400" /> My Work
