@@ -61,7 +61,8 @@ Just talk to me or paste a link!`,
     if (lower.includes("highlight")) return "highlight";
     if (lower.includes("clip") || lower.includes("viral")) return "clips";
     if (lower.includes("caption")) return "captions";
-    if (lower.includes("transcript")) return "transcription";
+    if (lower.includes("transcript") || lower.includes("transcribe"))
+      return "transcription";
     return null;
   };
 
@@ -97,7 +98,7 @@ Just talk to me or paste a link!`,
     if (!pendingIntent && foundLink) {
       setLastVideoLink(foundLink);
       addBotMessage(
-        "🎥 Nice link! Do you want me to summarize, highlight, clip, caption, or transcribe it?"
+        "🎥 Nice link! Do you want me to summarize, highlight, clip, caption, or transcribe it?",
       );
       setIsTyping(false);
       return;
@@ -116,7 +117,7 @@ Just talk to me or paste a link!`,
     if (intent && !lastVideoLink) {
       setPendingIntent(intent);
       addBotMessage(
-        `Got it! Please paste a link so I can ${intent} it for you.`
+        `Got it! Please paste a link so I can ${intent} it for you.`,
       );
       setIsTyping(false);
       return;
@@ -129,7 +130,7 @@ Just talk to me or paste a link!`,
         data.result?.response ||
           data.result?.reply ||
           data.message ||
-          "⚠️ No response."
+          "⚠️ No response.",
       );
     } catch (error) {
       console.error("Chat failed:", error);
